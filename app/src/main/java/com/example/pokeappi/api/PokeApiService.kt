@@ -2,6 +2,7 @@ package com.example.pokeappi.api
 
 import com.example.pokeappi.models.PokemonDetailResponse
 import com.example.pokeappi.models.PokemonListResponse
+import com.example.pokeappi.models.PokemonSpecies
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -14,7 +15,8 @@ interface PokeApiService {
     ): PokemonListResponse
 
     @GET("pokemon/{name}")
-    suspend fun getPokemonDetails(
-        @Path("name") name: String
-    ): PokemonDetailResponse
+    suspend fun getPokemonDetails(@Path("name") name: String): PokemonDetailResponse
+
+    @GET("pokemon-species/{name}")
+    suspend fun getPokemonSpecies(@Path("name") name: String): PokemonSpecies
 }
