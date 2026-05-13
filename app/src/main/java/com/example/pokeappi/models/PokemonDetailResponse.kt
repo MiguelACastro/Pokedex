@@ -1,7 +1,10 @@
 package com.example.pokeappi.models
 
+// Transforma la respuesta JSON de la API en objetos de Kotlin para acceder a imágenes, tipos y estadísticas.
+
 import com.google.gson.annotations.SerializedName
 
+// Modelo de datos para la respuesta de detalles de un Pokémon
 data class PokemonDetailResponse(
     val id: Int,
     val name: String,
@@ -27,6 +30,7 @@ data class OfficialArtwork(
     val frontDefault: String
 )
 
+// Mapeo de estadisticas
 data class StatSlot(
     @SerializedName("base_stat")
     val baseStat: Int,
@@ -37,6 +41,7 @@ data class StatInfo(
     val name: String
 )
 
+// Mapeo de tipos
 data class TypeSlot(
     val type: TypeInfo
 )
@@ -45,6 +50,7 @@ data class TypeInfo(
     val name: String
 )
 
+// Mapeo de habilidades
 data class AbilitySlot(
     val ability: AbilityInfo
 )

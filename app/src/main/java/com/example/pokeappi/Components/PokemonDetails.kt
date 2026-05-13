@@ -1,23 +1,20 @@
 package com.example.pokeappi.Components
 
+//organizar y mostrar la información específica de un Pokémon seleccionado dentro de una hoja inferior.
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -28,8 +25,11 @@ import com.example.pokeappi.ui.theme.getPokemonColor
 @Composable
 fun PokemonDetails(
     detail: PokemonDetailResponse?,
+    description: String,
+    types: List<String>,
     onClose: () -> Unit
 ) {
+    // Si no hay datos, mostrar cargando
     if (detail == null) {
         Box(modifier = Modifier.fillMaxWidth().height(300.dp), contentAlignment = Alignment.Center) {
             CircularProgressIndicator(color = Color(0xFFE3350D))
@@ -37,6 +37,7 @@ fun PokemonDetails(
         return
     }
 
+    // Color principal segun el tipo del pokemon
     val primaryTypeName = detail.types.firstOrNull()?.type?.name
     val headerColor = getPokemonColor(primaryTypeName)
 
@@ -45,6 +46,7 @@ fun PokemonDetails(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        // Encabezado con imagen y datos basicos
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -52,6 +54,7 @@ fun PokemonDetails(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Imagen oficial del pokemon
             AsyncImage(
                 model = detail.sprites.other.officialArtwork.frontDefault,
                 contentDescription = detail.name,
@@ -61,7 +64,7 @@ fun PokemonDetails(
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                // Número y Nombre
+                // Numero y Nombre del pokemon
                 Text(
                     text = "No. ${detail.id.toString().padStart(3, '0')}",
                     fontSize = 14.sp,
@@ -76,6 +79,7 @@ fun PokemonDetails(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
+                // Etiquetas de tipos
                 Row {
                     detail.types.forEach { typeSlot ->
                         TypeTag(typeName = typeSlot.type.name)
@@ -85,6 +89,7 @@ fun PokemonDetails(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Stats rapidos: Ataque y Defensa
                 val atk = detail.stats.find { it.stat.name == "attack" }?.baseStat ?: 0
                 val def = detail.stats.find { it.stat.name == "defense" }?.baseStat ?: 0
 
@@ -92,26 +97,36 @@ fun PokemonDetails(
                 StatRow("HV. 110", "DEF: $def")
             }
 
+            // Boton para cerrar la ventana
             IconButton(onClick = onClose) {
                 Icon(imageVector = Icons.Default.Close, contentDescription = "Cerrar", tint = Color.White)
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        // Nota: Los movimientos no estaban en el modelo original que leí, 
-        // pero se asume que existen según el código proporcionado.
-        // Si da error, habría que revisar PokemonDetailResponse.
-        
-        // En el PokemonDetailResponse que leí antes NO había 'moves'.
-        // Voy a omitir la parte de moves si no estoy seguro de que existe o 
-        // simplemente dejarla confiando en que el usuario la añadió.
-        // Revisando PokemonDetailResponse.kt... efectivamente no tiene moves.
-        // Para que no de error, comentaré o adaptaré.
+        // Seccion de descripcion en español
+        Text(
+            text = "DESCRIPCIÓN",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.DarkGray
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = description.replace("\n", " "), // Limpiamos saltos de linea
+            fontSize = 14.sp,
+            color = Color.Black,
+            lineHeight = 20.sp
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
-
+// Componente para las etiquetas de tipo (Fuego, Agua, etc)
 @Composable
 fun TypeTag(typeName: String) {
     val typeColor = getPokemonColor(typeName)
@@ -126,33 +141,11 @@ fun TypeTag(typeName: String) {
     )
 }
 
+// Componente para filas de estadisticas
 @Composable
 fun StatRow(labelLeft: String, labelRight: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(text = labelLeft, fontSize = 12.sp, color = Color.White, modifier = Modifier.weight(1f))
         Text(text = labelRight, fontSize = 12.sp, color = Color.White, modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-fun MoveButton(moveName: String, moveType: String?) {
-    val typeColor = getPokemonColor(moveType) ?: Color.Gray
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(8.dp))
-            .border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(8.dp))
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(modifier = Modifier.size(16.dp).background(typeColor, CircleShape))
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = moveName.replace("-", " ").uppercase(),
-            fontSize = 12.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Medium
-        )
     }
 }

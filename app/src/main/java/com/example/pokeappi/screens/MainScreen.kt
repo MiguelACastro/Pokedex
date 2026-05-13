@@ -1,5 +1,7 @@
 package com.example.pokeappi.screens
 
+// Pantalla principal: Gestiona la lista de Pokémon, el buscador en tiempo real y la hoja de detalles.
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +19,9 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,14 +39,19 @@ import com.example.pokeappi.viewModel.PokemonViewModel
 fun MainScreen(
     viewModel: PokemonViewModel = viewModel()
 ) {
+    // Estados y variables del ViewModel
     val lista by viewModel.pokemonList
     val selectedDetail by viewModel.selectedPokemonDetail
     val showBottomSheet by viewModel.showDetailBottomSheet
     val sheetState = rememberModalBottomSheetState()
+    var searchText by remember { mutableStateOf("") }
+    val speciesInfo by viewModel.speciesInfo
 
     Scaffold(
         topBar = {
+            // Contenedor de la parte superior roja
             Column(modifier = Modifier.background(Color(0xFFE3350D))) {
+                // Fila con Titulo y Menu
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -54,9 +64,13 @@ fun MainScreen(
                     Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Color.White)
                 }
 
+                // Caja de texto para buscar
                 TextField(
-                    value = "",
-                    onValueChange = {},
+                    value = searchText,
+                    onValueChange = { newText ->
+                        searchText = newText
+                        viewModel.onSearchTextChange(newText) // Activa el filtro
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -75,6 +89,7 @@ fun MainScreen(
             }
         },
         bottomBar = {
+            // Barra de navegacion inferior
             BottomAppBar(
                 containerColor = Color.White,
                 tonalElevation = 8.dp
@@ -88,6 +103,7 @@ fun MainScreen(
             }
         }
     ) { paddingValues ->
+        // Cuadricula de Pokemon
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(16.dp),
@@ -98,18 +114,20 @@ fun MainScreen(
                 .padding(paddingValues)
                 .background(Color(0xFFF5F5F5))
         ) {
-            items(lista) { pokemon ->
+            // Mostramos la lista filtrada del ViewModel
+            items(viewModel.filteredPokemon.value) { pokemon ->
                 PokemonCard(
                     name = pokemon.name,
                     url = pokemon.url,
                     onClick = {
-                        viewModel.selectPokemon(pokemon.name)
+                        viewModel.selectPokemon(pokemon.name) // Abre el detalle
                     }
                 )
             }
         }
     }
 
+    // Ventana emergente de detalles (BottomSheet)
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { viewModel.closeDetail() },
@@ -118,14 +136,20 @@ fun MainScreen(
             containerColor = Color.White,
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
         ) {
+            val descriptionEs = speciesInfo?.flavorTextEntries?.find { it.language.name == "es" }?.flavorText ?: "Sin descripción"
+            val types = selectedDetail?.types?.map { it.type.name} ?: emptyList()
+            // Contenido del detalle del Pokemon
             PokemonDetails(
                 detail = selectedDetail,
+                description = descriptionEs,
+                types = types,
                 onClose = { viewModel.closeDetail() }
             )
         }
     }
 }
 
+// Componente para los botones del menu inferior
 @Composable
 fun NavItem(icon: ImageVector, label: String, isSelected: Boolean) {
     Column(

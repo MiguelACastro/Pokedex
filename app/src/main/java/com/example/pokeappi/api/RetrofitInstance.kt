@@ -1,5 +1,7 @@
 package com.example.pokeappi.api
 
+//conexión con el servidor externo, definiendo cómo se construyen las peticiones y cómo se transforman los datos JSON de la PokéAPI en objetos de Kotlin.
+
 import com.example.pokeappi.models.PokemonDetailResponse
 import com.example.pokeappi.models.PokemonSpecies
 import retrofit2.Retrofit

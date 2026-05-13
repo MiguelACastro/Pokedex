@@ -1,5 +1,7 @@
 package com.example.pokeappi.Components
 
+// Componente visual se encarga de mostrar las estadísticas de combate del Pokémon mediante barras de progreso horizontales
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
@@ -13,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pokeappi.models.StatSlot
 
+
+// Dibuja una fila con el nombre, valor y una barra de progreso para una estadística individual.
 @Composable
 fun StatBar(
     statName: String,
@@ -26,6 +30,7 @@ fun StatBar(
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Nombre del atributo (ej. HP, ATTACK)
         Text(
             text = statName,
             modifier = Modifier.weight(0.2f),
@@ -33,12 +38,14 @@ fun StatBar(
             fontWeight = FontWeight.Bold
         )
 
+        // Valor numérico actual
         Text(
             text = statValue.toString(),
             modifier = Modifier.weight(0.15f),
             fontSize = 12.sp
         )
 
+        // Barra visual proporcional al valor máximo
         LinearProgressIndicator(
             progress = statValue.toFloat() / maxStat.toFloat(),
             modifier = Modifier
@@ -50,6 +57,10 @@ fun StatBar(
         )
     }
 }
+
+/**
+ * Genera una lista completa de estadísticas con colores temáticos.
+ */
 @Composable
 fun PokemonStatsList(stats: List<StatSlot>) {
     Column(
@@ -65,8 +76,9 @@ fun PokemonStatsList(stats: List<StatSlot>) {
             color = Color(0xFF303030)
         )
 
+        // Itera sobre cada estadística para crear su barra correspondiente
         stats.forEach { statSlot ->
-            // Asignamos colores según el nombre de la estadística
+            // Selección de color según el tipo de estadística para mejorar la UI
             val color = when (statSlot.stat.name.lowercase()) {
                 "hp" -> Color(0xFF4CAF50)
                 "attack" -> Color(0xFFF44336)
