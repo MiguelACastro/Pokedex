@@ -58,9 +58,6 @@ fun StatBar(
     }
 }
 
-/**
- * Genera una lista completa de estadísticas con colores temáticos.
- */
 @Composable
 fun PokemonStatsList(stats: List<StatSlot>) {
     Column(
