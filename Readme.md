@@ -35,4 +35,4 @@ Autenticación/Backend: Firebase (o la API que hayas integrado)
 Gestión de Dependencias: Gradle (Kotlin DSL)
 
 
-Proyecto desarrollado para la asignatura de Programación Móvil - 6to Semestre.
+## Proyecto desarrollado para la asignatura de Programación Móvil - 6to Semestre.
