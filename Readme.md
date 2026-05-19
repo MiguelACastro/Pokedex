@@ -1,5 +1,5 @@
 # PokéAppi - App de Pokedex
-###Este proyecto es una aplicación móvil diseñada como parte de la materia de Programación Móvil del 6to Semestre. La aplicación permite a los usuarios visualizar una lista de Pokémon, consultar sus estadísticas detalladas y gestionar un equipo.
+### Este proyecto es una aplicación móvil diseñada como parte de la materia de Programación Móvil del 6to Semestre. La aplicación permite a los usuarios visualizar una lista de Pokémon, consultar sus estadísticas detalladas y gestionar un equipo.
 
 ## 👥 Equipo de Trabajo
 Sergio Mariano Olachea Cervantes
