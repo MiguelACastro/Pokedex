@@ -35,6 +35,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pokeappi.viewModel.RegisterViewModel
 
 // ─────────────────────────────────────────
 // Paleta de colores (consistente con el proyecto)
@@ -52,6 +54,8 @@ private val IconTint       = Color(0xFF444444)
 // ─────────────────────────────────────────
 @Composable
 fun RegisterView(
+    viewModel: RegisterViewModel = viewModel(),
+    onRegisterSuccess: () -> Unit = {},
     onRegisterClick: (username: String, password: String) -> Unit = { _, _ -> },
     onLoginClick: () -> Unit = {},
     onNavItemClick: (String) -> Unit = {}
@@ -59,6 +63,9 @@ fun RegisterView(
     var trainerName       by remember { mutableStateOf("") }
     var password          by remember { mutableStateOf("") }
     var confirmPassword   by remember { mutableStateOf("") }
+    var localError        by remember { mutableStateOf<String?>(null) }
+    val isLoading by viewModel.isLoading
+    val errorMessage by viewModel.errorMessage
 
     Scaffold(
         bottomBar = {
@@ -159,9 +166,27 @@ fun RegisterView(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            val displayError = localError ?: errorMessage
+            if (displayError != null) {
+                Text(
+                    text = displayError,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
+                )
+            }
+
             // ── Botón CREAR CUENTA ──
             Button(
-                onClick = { onRegisterClick(trainerName, password) },
+                onClick = {
+                    // Valida que las contraseñas coincidan antes de ir a Firebase
+                    if (password != confirmPassword) {
+                        localError = "Las contraseñas no coinciden"
+                    } else {
+                        viewModel.registerUser(trainerName, password, onRegisterSuccess)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
@@ -171,22 +196,29 @@ fun RegisterView(
                     containerColor = PokeRed,
                     contentColor = Color.White
                 ),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                enabled = !isLoading
             ) {
-                Text(
-                    text = "CREAR CUENTA",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = 1.5.sp
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                // Sustituir por asset Pokéball propio en drawable/
-                Icon(
-                    imageVector = Icons.Default.Place,
-                    contentDescription = "Pokéball",
-                    tint = Color.White,
-                    modifier = Modifier.size(22.dp)
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 3.dp
+                    )
+                } else {
+                    Text(
+                        text = "CREAR CUENTA",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 1.5.sp
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Icon(
+                        imageVector = Icons.Default.Place,
+                        contentDescription = "Pokéball",
+                        tint = Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(18.dp))

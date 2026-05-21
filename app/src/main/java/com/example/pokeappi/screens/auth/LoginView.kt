@@ -31,6 +31,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pokeappi.viewModel.LoginViewModel
 
 // ─────────────────────────────────────────
 // Paleta de colores (consistente con MainScreen)
@@ -47,6 +49,8 @@ private val IconTint       = Color(0xFF444444)
 // ─────────────────────────────────────────
 @Composable
 fun LoginView(
+    viewModel: LoginViewModel = viewModel(),
+    onLoginSuccess: () -> Unit = {},
     onLoginClick: (username: String, password: String) -> Unit = { _, _ -> },
     onForgotPasswordClick: () -> Unit = {},
     onCreateAccountClick: () -> Unit = {},
@@ -54,6 +58,9 @@ fun LoginView(
 ) {
     var trainerName by remember { mutableStateOf("") }
     var password    by remember { mutableStateOf("") }
+
+    val isLoading by viewModel.isLoading
+    val errorMessage by viewModel.errorMessage
 
     Scaffold(
         bottomBar = {
@@ -122,7 +129,10 @@ fun LoginView(
                 // ── Campo: Nombre de Entrenador ──
                 LoginTextField(
                     value = trainerName,
-                    onValueChange = { trainerName = it },
+                    onValueChange = {
+                        trainerName = it
+                        viewModel.clearError()
+                    },
                     placeholder = "Nombre de Entrenador",
                     leadingIcon = Icons.Default.Person,
                     keyboardType = KeyboardType.Text,
@@ -134,7 +144,10 @@ fun LoginView(
                 // ── Campo: Contraseña ──
                 LoginTextField(
                     value = password,
-                    onValueChange = { password = it },
+                    onValueChange = {
+                        password = it
+                        viewModel.clearError()
+                    },
                     placeholder = "Contraseña",
                     leadingIcon = Icons.Default.Lock,
                     keyboardType = KeyboardType.Password,
@@ -157,9 +170,21 @@ fun LoginView(
 
                 Spacer(modifier = Modifier.height(36.dp))
 
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage!!,
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                }
+
                 // ── Botón principal: INICIAR SESIÓN ──
                 Button(
-                    onClick = { onLoginClick(trainerName, password) },
+                    onClick = {
+                        viewModel.loginUser(trainerName, password, onLoginSuccess)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(54.dp),
@@ -168,26 +193,30 @@ fun LoginView(
                         containerColor = PokeRed,
                         contentColor = Color.White
                     ),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                    enabled = !isLoading
                 ) {
-                    Text(
-                        text = "INICIAR SESIÓN",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 1.5.sp
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    // Ícono Pokéball simulado con ícono de Place (sustituir por asset propio)
-                    Icon(
-                        imageVector = Icons.Default.Place,
-                        contentDescription = "Pokéball",
-                        tint = Color.White,
-                        modifier = Modifier.size(22.dp)
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 3.dp
+                        )
+                    } else {
+                        Text(
+                            text = "INICIAR SESIÓN",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 1.5.sp
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Icon(
+                            imageVector = Icons.Default.Place,
+                            contentDescription = "Pokéball",
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 // ── Link: Crear cuenta nueva ──
                 Text(
                     text = "Crear cuenta nueva",
