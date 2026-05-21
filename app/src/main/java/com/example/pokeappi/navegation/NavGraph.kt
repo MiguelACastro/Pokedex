@@ -1,12 +1,13 @@
 package com.example.pokeappi.navegation
 
-// Importaciones para navegación y gestión de estados
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pokeappi.screens.LoginView
 import com.example.pokeappi.screens.MainScreen
+import com.example.pokeappi.screens.RegisterView
 import com.example.pokeappi.viewModel.PokemonViewModel
 
 @Composable
@@ -18,11 +19,42 @@ fun NavGraph() {
     val viewModel: PokemonViewModel = viewModel()
 
     // Configuracion del host de navegacion
-    NavHost(navController = navController, startDestination = "list") {
+    NavHost(navController = navController, startDestination = "login") {
 
-        // Ruta para la pantalla principal de la PokeDex
-        composable("list") {
-            MainScreen(viewModel = viewModel)
+        //Vista Login
+        composable("login") {
+            LoginView(
+                onLoginSuccess = {
+                    // Ruta para la pantalla principal de la PokeDex
+                    navController.navigate("main") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onCreateAccountClick = {
+                    // Redirecciona al registro
+                    navController.navigate("register")
+                })
+        }
+
+        //Vista Registro
+        composable("register") {
+            RegisterView(
+                onRegisterSuccess = {
+                    // Si se registra con éxito, vamos directo a "login"
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                },
+                onLoginClick = {
+                    // Si ya tiene cuenta, regresamos a la pantalla anterior (login)
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Vista Principal
+        composable("main") {
+            MainScreen()
         }
     }
 }
