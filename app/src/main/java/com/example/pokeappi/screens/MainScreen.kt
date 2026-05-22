@@ -68,7 +68,10 @@ fun MainScreen(
                 }
             }
         }
+        // Fondo de la pantalla
+        , containerColor = Color.White
     ) { paddingValues ->
+
         // Cuadricula de Pokemon
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -86,7 +89,7 @@ fun MainScreen(
                     pokemon = null,
                     name = pokemon.name,
                     url = pokemon.url,
-                    type = null,
+                    type = pokemon.type,
                     onClick = {
                         viewModel.selectPokemon(pokemon.name) // Abre el detalle
                     }

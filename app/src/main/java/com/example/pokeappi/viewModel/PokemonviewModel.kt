@@ -11,13 +11,13 @@ import com.example.pokeappi.models.PokemonDetailResponse
 import com.example.pokeappi.models.PokemonSpecies
 import com.example.pokeappi.models.SimplePokemon
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 
 class PokemonViewModel : ViewModel() {
 
     // Lista para el estado de la UI
     var pokemonList = mutableStateOf<List<SimplePokemon>>(emptyList())
-
 
     // Lista de apoyo para guardar los originales y no perderlos al filtrar
     private var allPokemon = listOf<SimplePokemon>()
@@ -41,15 +41,25 @@ class PokemonViewModel : ViewModel() {
         fetchList()
     }
 
-    // Funcion para obtener la lista de pokemon de la API
+    // Funcion para obtener la lista de pokemon de la API con sus tipos
     private fun fetchList() {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.getPokemonList(151)
-                // Guarda los datos en la lista maestra y en las listas de visualizacion
-                allPokemon = response.results
-                pokemonList.value = response.results
-                filteredPokemon.value = response.results
+                val detailedPokemon = response.results.map { simple ->
+                    async {
+                        try {
+                            val detail = RetrofitInstance.api.getPokemonDetails(simple.name)
+                            simple.copy(type = detail.types.firstOrNull()?.type?.name)
+                        } catch (e: Exception) {
+                            simple
+                        }
+                    }
+                }.awaitAll()
+
+                allPokemon = detailedPokemon
+                pokemonList.value = detailedPokemon
+                filteredPokemon.value = detailedPokemon
             } catch (e: Exception) {
                 e.printStackTrace()
             }

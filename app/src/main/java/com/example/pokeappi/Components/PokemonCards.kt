@@ -18,14 +18,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.pokeappi.models.PokemonDetailResponse
-import com.example.pokeappi.models.StatSlot
-
-
+import com.example.pokeappi.models.TypeSlot
+import com.example.pokeappi.ui.theme.PokemonHollowFamily
+import com.example.pokeappi.ui.theme.getPokemonColor
 
 @Composable
-fun PokemonCard(pokemon:PokemonDetailResponse?,name: String, url: String, type: String?, onClick: () -> Unit) {
-    // Color de acento para el borde de la tarjeta
-    val cardColor = Color(0xFFE3350D)
+fun PokemonCard(
+    pokemon: PokemonDetailResponse?,
+    name: String,
+    url: String,
+    type: String?,
+    onClick: () -> Unit
+) {
+    val primaryType = type ?: pokemon?.types?.firstOrNull()?.type?.name
+    val borderColor = getPokemonColor(primaryType)
 
     // Extrae el ID numérico desde la URL de la PokeAPI
     val id = url.split("/").filter { it.isNotEmpty() }.last()
@@ -38,7 +44,7 @@ fun PokemonCard(pokemon:PokemonDetailResponse?,name: String, url: String, type: 
             .fillMaxWidth()
             .clickable { onClick() }, // Detecta el toque para abrir detalles
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(2.dp, cardColor.copy(alpha = 0.2f)),
+        border = BorderStroke(2.dp, borderColor),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),
@@ -63,7 +69,8 @@ fun PokemonCard(pokemon:PokemonDetailResponse?,name: String, url: String, type: 
             // Nombre del Pokémon con la primera letra en mayúscula
             Text(
                 text = name.replaceFirstChar { it.uppercase() },
-                fontWeight = FontWeight.Bold,
+                fontFamily = PokemonHollowFamily,
+                fontWeight = FontWeight.ExtraBold,
                 fontSize = 14.sp,
                 color = Color.Black
             )
@@ -78,3 +85,6 @@ fun PokemonCard(pokemon:PokemonDetailResponse?,name: String, url: String, type: 
     }
 }
 
+fun getPokemonTypes(typeSlots: List<TypeSlot>): List<String> {
+    return typeSlots.map { it.type.name }
+}

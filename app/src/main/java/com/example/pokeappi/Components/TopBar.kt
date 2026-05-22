@@ -27,6 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.draw.clip
+import com.example.pokeappi.ui.theme.PokemonFontFamily
+import com.example.pokeappi.ui.theme.PokemonHollowFamily
+import com.example.pokeappi.ui.theme.PokemonSolidFamily
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,9 +55,23 @@ fun PokemonTopBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(imageVector = Icons.Default.Menu, contentDescription = null, tint = Color.White)
-            Text(text = "PokéDex", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.White)
-            Icon(imageVector = Icons.Default.Search, contentDescription = null, tint = Color.White)
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = null,
+                tint = Color.White
+            )
+            Text(
+                text = "Mi POKÉDEX",
+                fontSize = 22.sp,
+                fontFamily = PokemonSolidFamily,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = Color.White
+            )
         }
 
         // Caja de texto para buscar
@@ -93,6 +111,7 @@ fun LoginTopBar() {
             Text(
                 text = "MI POKÉDEX",
                 fontSize = 30.sp,
+                fontFamily = PokemonSolidFamily,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White,
                 letterSpacing = 2.sp
@@ -122,7 +141,8 @@ fun RegisterTopBar(){
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = "MI POKÉDEX",
-                fontSize = 30.sp,
+                fontSize = 35.sp,
+                fontFamily = PokemonSolidFamily,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White,
                 letterSpacing = 2.sp

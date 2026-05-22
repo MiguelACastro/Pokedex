@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.pokeappi.models.PokemonDetailResponse
 import com.example.pokeappi.models.StatSlot
+import com.example.pokeappi.ui.theme.PokemonHollowFamily
+import com.example.pokeappi.ui.theme.PokemonSolidFamily
 import com.example.pokeappi.ui.theme.getPokemonColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +76,8 @@ fun PokemonDetails(
                 Text(
                     text = detail.name.uppercase(),
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = PokemonHollowFamily,
+                    fontWeight = FontWeight.ExtraBold,
                     color = Color.White
                 )
 
@@ -115,6 +118,7 @@ fun PokemonDetails(
         // Seccion de descripcion en español
         Text(
             text = "DESCRIPCIÓN",
+            fontFamily = PokemonSolidFamily,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             color = Color.DarkGray
@@ -123,8 +127,9 @@ fun PokemonDetails(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = description.replace("\n", " "), // Limpiamos saltos de linea
+            text = description.replace("\n", " "), // Limpia saltos de linea
             fontSize = 14.sp,
+            fontFamily = PokemonSolidFamily,
             color = Color.Black,
             lineHeight = 20.sp
         )

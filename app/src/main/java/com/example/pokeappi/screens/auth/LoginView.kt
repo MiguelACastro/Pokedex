@@ -4,6 +4,7 @@ package com.example.pokeappi.screens
 // Diseño: header rojo redondeado, campos estilizados con íconos,
 // link de recuperación, botón principal y barra de navegación inferior.
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,12 +19,14 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
+import androidx.compose.remote.creation.dsl.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,13 +38,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pokeappi.Components.LoginTopBar
 import com.example.pokeappi.R
+import com.example.pokeappi.ui.theme.PokemonHollowFamily
+import com.example.pokeappi.ui.theme.PokemonSolidFamily
 import com.example.pokeappi.viewModel.LoginViewModel
 
 // ─────────────────────────────────────────
 // Paleta de colores (consistente con MainScreen)
 // ─────────────────────────────────────────
 private val PokeRed        = Color(0xFFE3350D)
-private val PokeBackground = Color(0xFFD9D9D9)
+private val PokeBackground = Color.White
 private val FieldBg        = Color(0xFFEAEAEA)
 private val CardBg         = Color(0xFFF2F2F2)
 private val TextPrimary    = Color(0xFF1A1A1A)
@@ -76,20 +81,32 @@ fun LoginView(
         containerColor = PokeBackground
     ) { paddingValues ->
         // ── Cuerpo del formulario ──
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.pokemonfondo),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
                 Spacer(modifier = Modifier.height(36.dp))
 
                 // Título de sección
                 Text(
                     text = "INICIO DE SESIÓN",
-                    fontSize = 22.sp,
+                    fontSize = 30.sp,
+                    fontFamily = PokemonSolidFamily,
                     fontWeight = FontWeight.ExtraBold,
                     color = TextPrimary,
                     letterSpacing = 1.sp
@@ -97,60 +114,60 @@ fun LoginView(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp))
-                    .background(color = CardBg, shape = RoundedCornerShape(20.dp))
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
                 Column(
-                    modifier = Modifier.padding(20.dp) // Espaciado interno de la tarjeta
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp))
+                        .background(color = CardBg, shape = RoundedCornerShape(20.dp))
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    LoginTextField(
-                        value = trainerName,
-                        onValueChange = {
-                            trainerName = it
-                            viewModel.clearError()
-                        },
-                        placeholder = "Nombre de Entrenador",
-                        leadingIcon = Icons.Default.Person,
-                        keyboardType = KeyboardType.Text,
-                        isPassword = false
-                    )
+                    Column(
+                        modifier = Modifier.padding(20.dp)
+                    ) {
+                        LoginTextField(
+                            value = trainerName,
+                            onValueChange = {
+                                trainerName = it
+                                viewModel.clearError()
+                            },
+                            placeholder = "Nombre de Entrenador",
+                            leadingIcon = Icons.Default.Person,
+                            keyboardType = KeyboardType.Text,
+                            isPassword = false
+                        )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    // ── Campo: Contraseña ──
-                    LoginTextField(
-                        value = password,
-                        onValueChange = {
-                            password = it
-                            viewModel.clearError()
-                        },
-                        placeholder = "Contraseña",
-                        leadingIcon = Icons.Default.Lock,
-                        keyboardType = KeyboardType.Password,
-                        isPassword = true
-                    )
+                        // ── Campo: Contraseña ──
+                        LoginTextField(
+                            value = password,
+                            onValueChange = {
+                                password = it
+                                viewModel.clearError()
+                            },
+                            placeholder = "Contraseña",
+                            leadingIcon = Icons.Default.Lock,
+                            keyboardType = KeyboardType.Password,
+                            isPassword = true
+                        )
 
-                    Spacer(modifier = Modifier.height(14.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
 
-                    // ── Link: ¿Olvidaste tu código? ──
-                    Text(
-                        text = "¿Olvidaste tu código de entrenador?",
-                        fontSize = 13.sp,
-                        color = TextPrimary,
-                        textDecoration = TextDecoration.Underline,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                            .clickable { onForgotPasswordClick() }
-                            .padding(vertical = 4.dp)
-                    )
+                        // ── Link: ¿Olvidaste tu código? ──
+                        Text(
+                            text = "¿Olvidaste tu código de entrenador?",
+                            fontSize = 13.sp,
+                            color = TextPrimary,
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier
+                                .align(Alignment.Start)
+                                .clickable { onForgotPasswordClick() }
+                                .padding(vertical = 4.dp)
+                        )
+                    }
                 }
-            }
 
                 Spacer(modifier = Modifier.height(36.dp))
 
@@ -189,7 +206,7 @@ fun LoginView(
                         Text(
                             text = "INICIAR SESIÓN",
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.ExtraBold,
+                            fontFamily = PokemonSolidFamily,
                             letterSpacing = 1.5.sp
                         )
                         Spacer(modifier = Modifier.width(10.dp))
@@ -216,6 +233,7 @@ fun LoginView(
             }
         }
     }
+}
 
 
 // ─────────────────────────────────────────

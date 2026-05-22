@@ -56,7 +56,6 @@ fun PokeAppiTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        //typography = Typography,
         content = content
     )
 }

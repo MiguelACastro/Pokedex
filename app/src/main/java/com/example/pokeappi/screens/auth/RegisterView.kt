@@ -4,6 +4,7 @@ package com.example.pokeappi.screens
 // Diseño: header rojo redondeado con "¡ÚNETE A LA AVENTURA!",
 // tarjeta blanca con 3 campos, botón CREAR CUENTA y link a Login.
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,6 +41,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pokeappi.Components.RegisterTopBar
 import com.example.pokeappi.viewModel.RegisterViewModel
 import com.example.pokeappi.R
+import com.example.pokeappi.ui.theme.PokemonSolidFamily
 
 // ─────────────────────────────────────────
 // Paleta de colores (consistente con el proyecto)
@@ -78,150 +81,162 @@ fun RegisterView(
         },
         containerColor = PokeBackground
     ) { paddingValues ->
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // ── Título de sección ──
-            Text(
-                text = "REGISTRO",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = TextPrimary,
-                letterSpacing = 2.sp
+            Image(
+                painter = painterResource(id = R.drawable.pokemonfondo),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // ── Tarjeta blanca con los campos ──
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp))
-                    .background(color = CardBg, shape = RoundedCornerShape(20.dp))
-                    .padding(horizontal = 16.dp, vertical = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Campo: Nombre de Entrenador
-                RegisterTextField(
-                    value = trainerName,
-                    onValueChange = { trainerName = it },
-                    placeholder = "Nombre de Entrenador",
-                    leadingIcon = Icons.Default.Person,
-                    keyboardType = KeyboardType.Text,
-                    isPassword = false
-                )
 
-                // Campo: Contraseña
-                RegisterTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    placeholder = "Contraseña",
-                    leadingIcon = Icons.Default.Lock,
-                    keyboardType = KeyboardType.Password,
-                    isPassword = true
-                )
+                Spacer(modifier = Modifier.height(32.dp))
 
-                // Campo: Confirmar Contraseña
-                RegisterTextField(
-                    value = confirmPassword,
-                    onValueChange = { confirmPassword = it },
-                    placeholder = "Confirmar Contraseña",
-                    leadingIcon = Icons.Default.Lock,
-                    keyboardType = KeyboardType.Password,
-                    isPassword = true
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            val displayError = localError ?: errorMessage
-            if (displayError != null) {
+                // ── Título de sección ──
                 Text(
-                    text = displayError,
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
+                    text = "REGISTRO",
+                    fontSize = 22.sp,
+                    fontFamily = PokemonSolidFamily,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = TextPrimary,
+                    letterSpacing = 2.sp
                 )
-            }
 
-            // ── Botón CREAR CUENTA ──
-            Button(
-                onClick = {
-                    // Valida que las contraseñas coincidan antes de ir a Firebase
-                    if (password != confirmPassword) {
-                        localError = "Las contraseñas no coinciden"
-                    } else {
-                        viewModel.registerUser(trainerName, password, onRegisterSuccess)
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .height(54.dp),
-                shape = RoundedCornerShape(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PokeRed,
-                    contentColor = Color.White
-                ),
-                enabled = !isLoading
-            ) {
-                if (isLoading) {
-                    CircularProgressIndicator(
-                        color = Color.White,
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 3.dp
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // ── Tarjeta blanca con los campos ──
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp))
+                        .background(color = CardBg, shape = RoundedCornerShape(20.dp))
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                ) {
+                    // Campo: Nombre de Entrenador
+                    RegisterTextField(
+                        value = trainerName,
+                        onValueChange = { trainerName = it },
+                        placeholder = "Nombre de Entrenador",
+                        leadingIcon = Icons.Default.Person,
+                        keyboardType = KeyboardType.Text,
+                        isPassword = false
                     )
-                } else {
+
+                    // Campo: Contraseña
+                    RegisterTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        placeholder = "Contraseña",
+                        leadingIcon = Icons.Default.Lock,
+                        keyboardType = KeyboardType.Password,
+                        isPassword = true
+                    )
+
+                    // Campo: Confirmar Contraseña
+                    RegisterTextField(
+                        value = confirmPassword,
+                        onValueChange = { confirmPassword = it },
+                        placeholder = "Confirmar Contraseña",
+                        leadingIcon = Icons.Default.Lock,
+                        keyboardType = KeyboardType.Password,
+                        isPassword = true
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                val displayError = localError ?: errorMessage
+                if (displayError != null) {
                     Text(
-                        text = "CREAR CUENTA",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = 1.5.sp
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Icon(
-                        painter = painterResource(id = R.drawable.pokeball),
-                        contentDescription = "Pokéball",
-                        tint = Color.White,
-                        modifier = Modifier.size(44.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(18.dp))
-
-            // ── Link: ¿Ya tienes cuenta? Iniciar sesión ──
-            val linkText = buildAnnotatedString {
-                withStyle(SpanStyle(color = TextPrimary, fontSize = 14.sp)) {
-                    append("¿Ya tienes cuenta? ")
-                }
-                withStyle(
-                    SpanStyle(
-                        color = TextPrimary,
+                        text = displayError,
+                        color = MaterialTheme.colorScheme.error,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        textDecoration = TextDecoration.Underline
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
                     )
-                ) {
-                    append("Iniciar sesión")
                 }
-            }
-            Text(
-                text = linkText,
-                modifier = Modifier.clickable { onLoginClick() }
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+                // ── Botón CREAR CUENTA ──
+                Button(
+                    onClick = {
+                        // Valida que las contraseñas coincidan antes de ir a Firebase
+                        if (password != confirmPassword) {
+                            localError = "Las contraseñas no coinciden"
+                        } else {
+                            viewModel.registerUser(trainerName, password, onRegisterSuccess)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .height(54.dp),
+                    shape = RoundedCornerShape(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PokeRed,
+                        contentColor = Color.White
+                    ),
+                    enabled = !isLoading
+                ) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 3.dp
+                        )
+                    } else {
+                        Text(
+                            text = "CREAR CUENTA",
+                            fontSize = 16.sp,
+                            fontFamily = PokemonSolidFamily,
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 1.5.sp
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.pokeball),
+                            contentDescription = "Pokéball",
+                            tint = Color.White,
+                            modifier = Modifier.size(44.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                // ── Link: ¿Ya tienes cuenta? Iniciar sesión ──
+                val linkText = buildAnnotatedString {
+                    withStyle(SpanStyle(color = TextPrimary, fontSize = 14.sp)) {
+                        append("¿Ya tienes cuenta? ")
+                    }
+                    withStyle(
+                        SpanStyle(
+                            color = TextPrimary,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
+                        append("Iniciar sesión")
+                    }
+                }
+                Text(
+                    text = linkText,
+                    modifier = Modifier.clickable { onLoginClick() }
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
     }
 }
