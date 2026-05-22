@@ -33,9 +33,17 @@ import androidx.compose.ui.draw.clip
 fun PokemonTopBar(
     searchText: String,
     onSearchValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier.background(MaterialTheme.colorScheme.primary)) {
+
+){
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp))
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(top = 52.dp, bottom = 36.dp),
+        contentAlignment = Alignment.Center
+    ){
+    Column( horizontalAlignment = Alignment.CenterHorizontally) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,6 +76,7 @@ fun PokemonTopBar(
         )
         Spacer(modifier = Modifier.height(8.dp))
     }
+        }
 }
 
 @Composable
