@@ -2,95 +2,71 @@ package com.example.pokeappi.Components
 
 // Componente visual se encarga de mostrar las estadísticas de combate del Pokémon mediante barras de progreso horizontales
 
+import android.R.color.black
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pokeappi.models.StatSlot
 
-
 // Dibuja una fila con el nombre, valor y una barra de progreso para una estadística individual.
 @Composable
-fun StatBar(
-    statName: String,
-    statValue: Int,
-    maxStat: Int = 255,
+fun StatsBar(
+    label: String,
+    value: Int,
+    maxValue: Int = 150,
     color: Color
 ) {
+    // Calcula el porcentaje de llenado
+    val progress = (value.toFloat() / maxValue.toFloat()).coerceIn(0f, 1f)
+
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Nombre del atributo (ej. HP, ATTACK)
         Text(
-            text = statName,
-            modifier = Modifier.weight(0.2f),
-            fontSize = 12.sp,
-            fontWeight = FontWeight.Bold
+            text = label,
+            fontSize = 10.sp,
+            color = Color.Black,
+            modifier = Modifier.width(
+                30.dp
+            )
         )
 
-        // Valor numérico actual
-        Text(
-            text = statValue.toString(),
-            modifier = Modifier.weight(0.15f),
-            fontSize = 12.sp
-        )
-
-        // Barra visual proporcional al valor máximo
-        LinearProgressIndicator(
-            progress = statValue.toFloat() / maxStat.toFloat(),
+        // Barra contenedora
+        Box(
             modifier = Modifier
-                .weight(0.65f)
-                .height(8.dp),
-            color = color,
-            trackColor = Color.LightGray.copy(alpha = 0.3f),
-            strokeCap = StrokeCap.Round
-        )
-    }
-}
-
-@Composable
-fun PokemonStatsList(stats: List<StatSlot>) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Estadísticas Base",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 12.dp),
-            color = Color(0xFF303030)
-        )
-
-        // Itera sobre cada estadística para crear su barra correspondiente
-        stats.forEach { statSlot ->
-            // Selección de color según el tipo de estadística para mejorar la UI
-            val color = when (statSlot.stat.name.lowercase()) {
-                "hp" -> Color(0xFF4CAF50)
-                "attack" -> Color(0xFFF44336)
-                "defense" -> Color(0xFF2196F3)
-                "special-attack" -> Color(0xFFFF9800)
-                "special-defense" -> Color(0xFF9C27B0)
-                "speed" -> Color(0xFFFFEB3B)
-                else -> Color.Gray
-            }
-
-            StatBar(
-                statName = statSlot.stat.name.uppercase(),
-                statValue = statSlot.baseStat,
-                color = color
+                .weight(1f)
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color.LightGray)
+                .border(
+                    border = BorderStroke(
+                        2.dp,
+                        color = Color.Black
+                    )
+                )
+        ) {
+            // Barra de progreso
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(progress)
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(color)
             )
         }
+
+        Text(text = "$value", fontSize = 10.sp, color = Color.Black, modifier = Modifier.padding(start = 8.dp))
     }
 }
+

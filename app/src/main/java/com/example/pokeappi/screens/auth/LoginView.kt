@@ -21,9 +21,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,6 +33,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pokeappi.Components.LoginTopBar
+import com.example.pokeappi.R
 import com.example.pokeappi.viewModel.LoginViewModel
 
 // ─────────────────────────────────────────
@@ -40,6 +43,7 @@ import com.example.pokeappi.viewModel.LoginViewModel
 private val PokeRed        = Color(0xFFE3350D)
 private val PokeBackground = Color(0xFFD9D9D9)
 private val FieldBg        = Color(0xFFEAEAEA)
+private val CardBg         = Color(0xFFF2F2F2)
 private val TextPrimary    = Color(0xFF1A1A1A)
 private val TextSecondary  = Color(0xFF666666)
 private val IconTint       = Color(0xFF444444)
@@ -63,12 +67,15 @@ fun LoginView(
     val errorMessage by viewModel.errorMessage
 
     Scaffold(
+        topBar = {
+            LoginTopBar()
+        },
         bottomBar = {
-            LoginBottomBar(onNavItemClick = onNavItemClick)
+            LoginBottomBar(onNavItemClick)
         },
         containerColor = PokeBackground
     ) { paddingValues ->
-
+        // ── Cuerpo del formulario ──
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -76,42 +83,6 @@ fun LoginView(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            // ── Header rojo con esquinas inferiores redondeadas ──
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp))
-                    .background(PokeRed)
-                    .padding(top = 52.dp, bottom = 36.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "MI POKÉDEX",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White,
-                        letterSpacing = 2.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "¡BIENVENIDO, ENTRENADOR!",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        letterSpacing = 1.sp
-                    )
-                }
-            }
-
-            // ── Cuerpo del formulario ──
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 28.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
 
                 Spacer(modifier = Modifier.height(36.dp))
 
@@ -126,47 +97,60 @@ fun LoginView(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // ── Campo: Nombre de Entrenador ──
-                LoginTextField(
-                    value = trainerName,
-                    onValueChange = {
-                        trainerName = it
-                        viewModel.clearError()
-                    },
-                    placeholder = "Nombre de Entrenador",
-                    leadingIcon = Icons.Default.Person,
-                    keyboardType = KeyboardType.Text,
-                    isPassword = false
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(20.dp))
+                    .background(color = CardBg, shape = RoundedCornerShape(20.dp))
+                    .padding(horizontal = 16.dp, vertical = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp) // Espaciado interno de la tarjeta
+                ) {
+                    LoginTextField(
+                        value = trainerName,
+                        onValueChange = {
+                            trainerName = it
+                            viewModel.clearError()
+                        },
+                        placeholder = "Nombre de Entrenador",
+                        leadingIcon = Icons.Default.Person,
+                        keyboardType = KeyboardType.Text,
+                        isPassword = false
+                    )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                // ── Campo: Contraseña ──
-                LoginTextField(
-                    value = password,
-                    onValueChange = {
-                        password = it
-                        viewModel.clearError()
-                    },
-                    placeholder = "Contraseña",
-                    leadingIcon = Icons.Default.Lock,
-                    keyboardType = KeyboardType.Password,
-                    isPassword = true
-                )
+                    // ── Campo: Contraseña ──
+                    LoginTextField(
+                        value = password,
+                        onValueChange = {
+                            password = it
+                            viewModel.clearError()
+                        },
+                        placeholder = "Contraseña",
+                        leadingIcon = Icons.Default.Lock,
+                        keyboardType = KeyboardType.Password,
+                        isPassword = true
+                    )
 
-                Spacer(modifier = Modifier.height(14.dp))
+                    Spacer(modifier = Modifier.height(14.dp))
 
-                // ── Link: ¿Olvidaste tu código? ──
-                Text(
-                    text = "¿Olvidaste tu código de entrenador?",
-                    fontSize = 13.sp,
-                    color = TextPrimary,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .clickable { onForgotPasswordClick() }
-                        .padding(vertical = 4.dp)
-                )
+                    // ── Link: ¿Olvidaste tu código? ──
+                    Text(
+                        text = "¿Olvidaste tu código de entrenador?",
+                        fontSize = 13.sp,
+                        color = TextPrimary,
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier
+                            .align(Alignment.Start)
+                            .clickable { onForgotPasswordClick() }
+                            .padding(vertical = 4.dp)
+                    )
+                }
+            }
 
                 Spacer(modifier = Modifier.height(36.dp))
 
@@ -210,10 +194,10 @@ fun LoginView(
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Icon(
-                            imageVector = Icons.Default.Place,
+                            painter = painterResource(id = R.drawable.pokeball),
                             contentDescription = "Pokéball",
                             tint = Color.White,
-                            modifier = Modifier.size(22.dp)
+                            modifier = Modifier.size(66.dp)
                         )
                     }
                 }
@@ -232,7 +216,7 @@ fun LoginView(
             }
         }
     }
-}
+
 
 // ─────────────────────────────────────────
 // Componente reutilizable: campo de texto

@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.remote.creation.core)
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.coil.compose)
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.pokeappi.models.PokemonDetailResponse
+import com.example.pokeappi.models.StatSlot
 import com.example.pokeappi.ui.theme.getPokemonColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +73,7 @@ fun PokemonDetails(
                 )
                 Text(
                     text = detail.name.uppercase(),
-                    fontSize = 22.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
@@ -90,11 +91,17 @@ fun PokemonDetails(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Stats rapidos: Ataque y Defensa
-                val atk = detail.stats.find { it.stat.name == "attack" }?.baseStat ?: 0
-                val def = detail.stats.find { it.stat.name == "defense" }?.baseStat ?: 0
+                val atk = getStatValue(detail.stats, "attack")
+                val def = getStatValue(detail.stats, "defense")
+                val hp = getStatValue(detail.stats, "hp")
+                val spd = getStatValue(detail.stats, "speed")
 
-                StatRow("LV. 210", "ATT: $atk")
-                StatRow("HV. 110", "DEF: $def")
+                Column(modifier = Modifier.padding(top = 8.dp)) {
+                    StatsBar("HP", hp, 255, Color(0xFF4CAF50))
+                    StatsBar("ATK", atk, 255, Color(0xFFF44336))
+                    StatsBar("DEF", def, 255, Color(0xFF2196F3))
+                    StatsBar("SPD", spd, 255, Color(0xFFE91E63))
+                }
             }
 
             // Boton para cerrar la ventana
@@ -141,11 +148,7 @@ fun TypeTag(typeName: String) {
     )
 }
 
-// Componente para filas de estadisticas
-@Composable
-fun StatRow(labelLeft: String, labelRight: String) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = labelLeft, fontSize = 12.sp, color = Color.White, modifier = Modifier.weight(1f))
-        Text(text = labelRight, fontSize = 12.sp, color = Color.White, modifier = Modifier.weight(1f))
-    }
+fun getStatValue(stats: List<StatSlot>, statName: String): Int {
+    return stats.find { it.stat.name == statName }?.baseStat ?: 0
 }
+

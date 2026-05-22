@@ -21,10 +21,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +36,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pokeappi.Components.RegisterTopBar
 import com.example.pokeappi.viewModel.RegisterViewModel
+import com.example.pokeappi.R
 
 // ─────────────────────────────────────────
 // Paleta de colores (consistente con el proyecto)
@@ -68,8 +70,11 @@ fun RegisterView(
     val errorMessage by viewModel.errorMessage
 
     Scaffold(
+        topBar = {
+            RegisterTopBar()
+        },
         bottomBar = {
-            RegisterBottomBar(onNavItemClick = onNavItemClick)
+            RegisterBottomBar(onNavItemClick)
         },
         containerColor = PokeBackground
     ) { paddingValues ->
@@ -81,34 +86,6 @@ fun RegisterView(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            // ── Header rojo con esquinas inferiores redondeadas ──
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp))
-                    .background(PokeRed)
-                    .padding(top = 52.dp, bottom = 36.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "MI POKÉDEX",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White,
-                        letterSpacing = 2.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "¡ÚNETE A LA AVENTURA!",
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        letterSpacing = 1.sp
-                    )
-                }
-            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -213,10 +190,10 @@ fun RegisterView(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Icon(
-                        imageVector = Icons.Default.Place,
+                        painter = painterResource(id = R.drawable.pokeball),
                         contentDescription = "Pokéball",
                         tint = Color.White,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(44.dp)
                     )
                 }
             }

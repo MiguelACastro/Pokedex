@@ -18,6 +18,7 @@ class PokemonViewModel : ViewModel() {
     // Lista para el estado de la UI
     var pokemonList = mutableStateOf<List<SimplePokemon>>(emptyList())
 
+
     // Lista de apoyo para guardar los originales y no perderlos al filtrar
     private var allPokemon = listOf<SimplePokemon>()
 
@@ -45,7 +46,7 @@ class PokemonViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.getPokemonList(151)
-                // Guardamos los datos en la lista maestra y en las listas de visualizacion
+                // Guarda los datos en la lista maestra y en las listas de visualizacion
                 allPokemon = response.results
                 pokemonList.value = response.results
                 filteredPokemon.value = response.results

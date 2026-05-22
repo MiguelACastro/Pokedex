@@ -3,7 +3,6 @@ package com.example.pokeappi.Components
 // Tarjeta individual para mostrar un Pokémon en la cuadrícula principal.
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,9 +17,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.pokeappi.models.PokemonDetailResponse
+import com.example.pokeappi.models.StatSlot
+
+
 
 @Composable
-fun PokemonCard(name: String, url: String, type: String? ="dragon", onClick: () -> Unit) {
+fun PokemonCard(pokemon:PokemonDetailResponse?,name: String, url: String, type: String?, onClick: () -> Unit) {
     // Color de acento para el borde de la tarjeta
     val cardColor = Color(0xFFE3350D)
 
@@ -42,8 +45,11 @@ fun PokemonCard(name: String, url: String, type: String? ="dragon", onClick: () 
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
+            verticalArrangement = Arrangement.Center
         ) {
             // Carga asíncrona de la imagen del Pokémon
             AsyncImage(
@@ -63,19 +69,12 @@ fun PokemonCard(name: String, url: String, type: String? ="dragon", onClick: () 
             )
 
             // Formato visual del número de la PokéDex
-            Text(text = "No. ${id.padStart(3, '0')}", fontSize = 10.sp, color = Color.Gray)
-
-            // Fila de estadísticas: Nivel y Vida (HP)
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "Lv. 25", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "HP: 110", fontSize = 10.sp, color = Color.Gray)
-            }
-
-            // Fila de estadísticas: Ataque y Defensa
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "ATT: 55", fontSize = 10.sp, color = Color.Gray)
-                Text(text = "DEF: 40", fontSize = 10.sp, color = Color.Gray)
-            }
+            Text(
+                text = "No. ${id.padStart(3, '0')}",
+                fontSize = 10.sp,
+                color = Color.Gray
+            )
         }
     }
 }
+
