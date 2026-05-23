@@ -13,7 +13,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,11 +46,21 @@ fun PokemonDetails(
     val primaryTypeName = detail.types.firstOrNull()?.type?.name
     val headerColor = getPokemonColor(primaryTypeName)
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+    Box(
+        modifier = Modifier.fillMaxWidth()
     ) {
+        AsyncImage(
+            model = detail.sprites.other.officialArtwork.frontDefault,
+            contentDescription = detail.name,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+            alpha = 0.5f
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
         // Encabezado con imagen y datos basicos
         Row(
             modifier = Modifier
@@ -116,27 +128,35 @@ fun PokemonDetails(
         Spacer(modifier = Modifier.height(20.dp))
 
         // Seccion de descripcion en español
-        Text(
-            text = "DESCRIPCIÓN",
-            fontFamily = PokemonSolidFamily,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.DarkGray
-        )
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White.copy(alpha = 0.8f), RoundedCornerShape(8.dp))
+            .padding(12.dp)
+        ) {
+            Text(
+                text = "DESCRIPCIÓN",
+                fontFamily = PokemonSolidFamily,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.DarkGray
+            )
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = description.replace("\n", " "), // Limpia saltos de linea
-            fontSize = 14.sp,
-            fontFamily = PokemonSolidFamily,
-            color = Color.Black,
-            lineHeight = 20.sp
-        )
+            Text(
+                text = description.replace("\n", " "), // Limpia saltos de linea
+                fontSize = 14.sp,
+                fontFamily = PokemonSolidFamily,
+                color = Color.Black,
+                lineHeight = 20.sp
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        }
     }
 }
+
 
 // Componente para las etiquetas de tipo (Fuego, Agua, etc)
 @Composable
