@@ -10,8 +10,13 @@ import com.example.pokeappi.api.RetrofitInstance
 import com.example.pokeappi.models.PokemonDetailResponse
 import com.example.pokeappi.models.PokemonSpecies
 import com.example.pokeappi.models.SimplePokemon
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class PokemonViewModel : ViewModel() {
@@ -36,6 +41,22 @@ class PokemonViewModel : ViewModel() {
     // Estado para la informacion de la especie
     private val _speciesInfo = mutableStateOf<PokemonSpecies?>(null)
     val speciesInfo: State<PokemonSpecies?> = _speciesInfo
+
+
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+
+    // Estado para la UI
+    private val _pokemonTeam = MutableStateFlow<Set<String>>(emptySet())
+    val pokemonTeam: StateFlow<Set<String>> = _pokemonTeam.asStateFlow()
+
+    // ID del usuario actual de Firebase
+    private val currentUserId: String?
+        get() = auth.currentUser?.uid
+
+    init {
+        listenToUserTeam()
+    }
 
     init {
         fetchList()
@@ -106,5 +127,37 @@ class PokemonViewModel : ViewModel() {
                 pokemon.name.startsWith(query, ignoreCase = true) || id == query
             }
         }
+    }
+
+    fun listenToUserTeam() {
+        val userId = currentUserId ?: return
+
+        db.collection("teams").document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null || snapshot == null) return@addSnapshotListener
+
+                val pokemonsList = snapshot.get("pokemons") as? List<String>
+                _pokemonTeam.value = pokemonsList?.toSet() ?: emptySet()
+            }
+    }
+
+    fun toggleTeamMember(pokemonName: String) {
+        val userId = currentUserId ?: return
+        val currentTeam = _pokemonTeam.value.toMutableList()
+
+        if (currentTeam.contains(pokemonName)) {
+            currentTeam.remove(pokemonName)
+        } else {
+            if (currentTeam.size < 6) {
+                currentTeam.add(pokemonName)
+            } else {
+                return
+            }
+        }
+
+        db.collection("teams").document(userId)
+            .set(mapOf("pokemons" to currentTeam))
+            .addOnFailureListener {
+            }
     }
 }

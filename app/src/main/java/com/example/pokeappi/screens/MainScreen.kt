@@ -3,29 +3,16 @@ package com.example.pokeappi.screens
 // Pantalla principal: Gestiona la lista de Pokémon, el buscador en tiempo real y la hoja de detalles.
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pokeappi.Components.PokemonCard
 import com.example.pokeappi.Components.PokemonDetails
@@ -35,7 +22,8 @@ import com.example.pokeappi.viewModel.PokemonViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: PokemonViewModel = viewModel()
+    viewModel: PokemonViewModel = viewModel(),
+    scaffoldPadding: PaddingValues
 ) {
     // Estados y variables del ViewModel
     val selectedDetail by viewModel.selectedPokemonDetail
@@ -43,6 +31,7 @@ fun MainScreen(
     val sheetState = rememberModalBottomSheetState()
     var searchText by remember { mutableStateOf("") }
     val speciesInfo by viewModel.speciesInfo
+    val pokemonTeamState by viewModel.pokemonTeam.collectAsState()
 
     Scaffold(
         topBar = {
@@ -54,24 +43,8 @@ fun MainScreen(
                 }
             )
         },
-        bottomBar = {
-            // Barra de navegacion inferior
-            BottomAppBar(
-                containerColor = Color.White,
-                tonalElevation = 8.dp
-            ) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    NavItem(Icons.AutoMirrored.Filled.List, "PokéDex", true)
-                    NavItem(Icons.Default.FavoriteBorder, "Equipo", false)
-                    NavItem(Icons.Default.Place, "Regiones", false)
-                    NavItem(Icons.Default.Person, "Perfil", false)
-                }
-            }
-        }
-        // Fondo de la pantalla
-        , containerColor = Color.White
+        containerColor = Color.White
     ) { paddingValues ->
-
         // Cuadricula de Pokemon
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -83,15 +56,20 @@ fun MainScreen(
                 .padding(paddingValues)
                 .background(Color(0xFFF5F5F5))
         ) {
-            // Mostramos la lista filtrada del ViewModel
+            // Muestra la lista filtrada del ViewModel
             items(viewModel.filteredPokemon.value) { pokemon ->
+                val isInTeam = pokemonTeamState.contains(pokemon.name)
                 PokemonCard(
                     pokemon = null,
                     name = pokemon.name,
                     url = pokemon.url,
                     type = pokemon.type,
+                    isInTeam = isInTeam,
                     onClick = {
                         viewModel.selectPokemon(pokemon.name) // Abre el detalle
+                    },
+                    onTeamToggle = {
+                        viewModel.toggleTeamMember(pokemon.name)
                     }
                 )
             }
@@ -109,6 +87,7 @@ fun MainScreen(
         ) {
             val descriptionEs = speciesInfo?.flavorTextEntries?.find { it.language.name == "es" }?.flavorText ?: "Sin descripción"
             val types = selectedDetail?.types?.map { it.type.name} ?: emptyList()
+            
             // Contenido del detalle del Pokemon
             PokemonDetails(
                 detail = selectedDetail,
@@ -117,26 +96,5 @@ fun MainScreen(
                 onClose = { viewModel.closeDetail() }
             )
         }
-    }
-}
-
-// Componente para los botones del menu inferior
-@Composable
-fun NavItem(icon: ImageVector, label: String, isSelected: Boolean) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.clickable { }
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = if (isSelected) Color(0xFFE3350D) else Color.Gray
-        )
-        Text(
-            text = label,
-            fontSize = 11.sp,
-            color = if (isSelected) Color(0xFFE3350D) else Color.Gray
-        )
     }
 }

@@ -13,13 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.List
+import com.example.pokeappi.Components.PokeBottomBar
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
-import androidx.compose.remote.creation.dsl.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +35,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pokeappi.Components.LoginTopBar
 import com.example.pokeappi.R
-import com.example.pokeappi.ui.theme.PokemonHollowFamily
 import com.example.pokeappi.ui.theme.PokemonSolidFamily
 import com.example.pokeappi.viewModel.LoginViewModel
 
@@ -76,7 +72,10 @@ fun LoginView(
             LoginTopBar()
         },
         bottomBar = {
-            LoginBottomBar(onNavItemClick)
+            PokeBottomBar(
+                currentRoute = null,
+                onNavItemClick = onNavItemClick
+            )
         },
         containerColor = PokeBackground
     ) { paddingValues ->
@@ -285,79 +284,5 @@ fun LoginTextField(
     )
 }
 
-// ─────────────────────────────────────────
-// Componente: Barra de navegación inferior
-// ─────────────────────────────────────────
-@Composable
-fun LoginBottomBar(onNavItemClick: (String) -> Unit = {}) {
-    BottomAppBar(
-        containerColor = Color.White,
-        tonalElevation = 8.dp,
-        modifier = Modifier.height(64.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LoginNavItem(
-                icon = Icons.Default.List,
-                label = "POKÉDEX",
-                isSelected = true,
-                onClick = { onNavItemClick("pokedex") }
-            )
-            LoginNavItem(
-                icon = Icons.Default.FavoriteBorder,
-                label = "EQUIPO",
-                isSelected = false,
-                onClick = { onNavItemClick("equipo") }
-            )
-            LoginNavItem(
-                icon = Icons.Default.Place,
-                label = "REGIONES",
-                isSelected = false,
-                onClick = { onNavItemClick("regiones") }
-            )
-            LoginNavItem(
-                icon = Icons.Default.Person,
-                label = "PERFIL",
-                isSelected = false,
-                onClick = { onNavItemClick("perfil") }
-            )
-        }
-    }
-}
 
-// ─────────────────────────────────────────
-// Componente: Ítem del menú inferior
-// ─────────────────────────────────────────
-@Composable
-fun LoginNavItem(
-    icon: ImageVector,
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .clickable { onClick() }
-            .padding(horizontal = 8.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            tint = if (isSelected) PokeRed else Color.Gray,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-            text = label,
-            fontSize = 10.sp,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = if (isSelected) PokeRed else Color.Gray,
-            letterSpacing = 0.5.sp
-        )
-    }
-}
+

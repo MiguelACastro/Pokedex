@@ -1,60 +1,112 @@
 package com.example.pokeappi.navegation
 
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.pokeappi.Components.PokeBottomBar
 import com.example.pokeappi.screens.LoginView
 import com.example.pokeappi.screens.MainScreen
 import com.example.pokeappi.screens.RegisterView
+import com.example.pokeappi.screens.TeamScreen
 import com.example.pokeappi.viewModel.PokemonViewModel
 
 @Composable
 fun NavGraph() {
-    // Controlador de rutas
     val navController = rememberNavController()
-
-    // ViewModel compartido para las pantallas
     val viewModel: PokemonViewModel = viewModel()
 
-    // Configuracion del host de navegacion
-    NavHost(navController = navController, startDestination = "login") {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-        //Vista Login
-        composable("login") {
-            LoginView(
-                onLoginSuccess = {
-                    // Ruta para la pantalla principal de la PokeDex
-                    navController.navigate("main") {
-                        popUpTo("login") { inclusive = true }
+    val authenticatedRoutes = listOf("main", "equipo", "regiones", "perfil")
+
+    Scaffold(
+        bottomBar = {
+            if (currentRoute in authenticatedRoutes) {
+                PokeBottomBar(
+                    currentRoute = currentRoute,
+                    onNavItemClick = { route ->
+                        val destinationRoute = when(route) {
+                            "pokedex" -> "main"
+                            "equipo" -> "equipo"
+                            "regiones" -> "regiones"
+                            "perfil" -> "perfil"
+                            else -> "main"
+                        }
+
+                        navController.navigate(destinationRoute) {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
-                },
-                onCreateAccountClick = {
-                    // Redirecciona al registro
-                    navController.navigate("register")
-                })
+                )
+            }
         }
-
-        //Vista Registro
-        composable("register") {
-            RegisterView(
-                onRegisterSuccess = {
-                    // Si se registra con éxito, vamos directo a "login"
-                    navController.navigate("login") {
-                        popUpTo("register") { inclusive = true }
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = "login"
+        ) {
+            // Vista Login
+            composable("login") {
+                LoginView(
+                    onLoginSuccess = {
+                        viewModel.listenToUserTeam()
+                        navController.navigate("main") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    },
+                    onCreateAccountClick = {
+                        navController.navigate("register")
                     }
-                },
-                onLoginClick = {
-                    // Si ya tiene cuenta, regresamos a la pantalla anterior (login)
-                    navController.popBackStack()
-                }
-            )
-        }
+                )
+            }
 
-        // Vista Principal
-        composable("main") {
-            MainScreen()
+            // Vista Registro
+            composable("register") {
+                RegisterView(
+                    onRegisterSuccess = {
+                        navController.navigate("login") {
+                            popUpTo("register") { inclusive = true }
+                        }
+                    },
+                    onLoginClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            // Vista Principal (Pokedex)
+            composable("main") {
+                MainScreen(
+                    scaffoldPadding = paddingValues,
+                    viewModel = viewModel
+                )
+            }
+
+            // Vista del Equipo
+            composable("equipo") {
+                TeamScreen(
+                    viewModel = viewModel,
+                    onPokemonClick = { pokemonName ->
+                        viewModel.selectPokemon(pokemonName)
+                    }
+                )
+            }
+
+            // Vista de Regiones
+            composable("regiones") {
+            }
+
+            // Vista de Perfil
+            composable("perfil") {
+            }
         }
     }
 }
