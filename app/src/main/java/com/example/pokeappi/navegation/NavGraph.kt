@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pokeappi.Components.PokeBottomBar
 import com.example.pokeappi.screens.LoginView
 import com.example.pokeappi.screens.MainScreen
+import com.example.pokeappi.screens.RegionScreen
 import com.example.pokeappi.screens.RegisterView
 import com.example.pokeappi.screens.TeamScreen
 import com.example.pokeappi.viewModel.PokemonViewModel
@@ -102,6 +103,9 @@ fun NavGraph() {
 
             // Vista de Regiones
             composable("regiones") {
+                RegionScreen(
+
+                )
             }
 
             // Vista de Perfil

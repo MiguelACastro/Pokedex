@@ -158,3 +158,33 @@ fun RegisterTopBar(){
         }
     }
 }
+@Composable
+fun RegionTopBar() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp))
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(top = 52.dp, bottom = 36.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "MI POKÉDEX",
+                fontSize = 30.sp,
+                fontFamily = PokemonSolidFamily,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White,
+                letterSpacing = 2.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "REGIONES",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                letterSpacing = 1.sp
+            )
+        }
+    }
+}

@@ -3,6 +3,7 @@ package com.example.pokeappi.api
 import com.example.pokeappi.models.PokemonDetailResponse
 import com.example.pokeappi.models.PokemonListResponse
 import com.example.pokeappi.models.PokemonSpecies
+import com.example.pokeappi.models.RegionResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -19,4 +20,7 @@ interface PokeApiService {
 
     @GET("pokemon-species/{name}")
     suspend fun getPokemonSpecies(@Path("name") name: String): PokemonSpecies
+
+    @GET("region")
+    suspend fun getRegions(): RegionResponse
 }
