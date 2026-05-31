@@ -50,6 +50,14 @@ class PokemonViewModel : ViewModel() {
     private val _pokemonTeam = MutableStateFlow<Set<String>>(emptySet())
     val pokemonTeam: StateFlow<Set<String>> = _pokemonTeam.asStateFlow()
 
+    // Estado para mensajes/errores
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    fun clearErrorMessage() {
+        _errorMessage.value = null
+    }
+
     // ID del usuario actual de Firebase
     private val currentUserId: String?
         get() = auth.currentUser?.uid
@@ -151,6 +159,7 @@ class PokemonViewModel : ViewModel() {
             if (currentTeam.size < 6) {
                 currentTeam.add(pokemonName)
             } else {
+                _errorMessage.value = "¡Tu equipo está lleno! No puedes tener más de 6 Pokémon."
                 return
             }
         }
