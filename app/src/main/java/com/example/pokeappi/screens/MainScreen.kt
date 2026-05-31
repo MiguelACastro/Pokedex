@@ -13,14 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.pokeappi.ui.theme.PokemonHollowFamily
+import com.example.pokeappi.Components.MessageCard
 import com.example.pokeappi.Components.PokemonCard
 import com.example.pokeappi.Components.PokemonDetails
 import com.example.pokeappi.Components.PokemonTopBar
@@ -61,60 +58,15 @@ fun MainScreen(
                     .background(Color(0xFFF5F5F5)),
                 contentAlignment = Alignment.Center
             ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .background(
-                                    color = Color(0xFFFFEBEE),
-                                    shape = RoundedCornerShape(40.dp)
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = null,
-                                tint = Color(0xFFE57373),
-                                modifier = Modifier.size(40.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        Text(
-                            text = "Sin Resultados",
-                            fontFamily = PokemonHollowFamily,
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 22.sp,
-                            color = Color(0xFFE57373),
-                            textAlign = TextAlign.Center
-                        )
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text(
-                            text = "No encontramos ningún Pokémon que coincida con \"$searchText\".\nIntenta buscar con otro nombre o número.",
-                            fontSize = 14.sp,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                            lineHeight = 20.sp
-                        )
-                    }
-                }
+                MessageCard(
+                    title = "Sin Resultados",
+                    message = "No encontramos ningún Pokémon que coincida con \"$searchText\".\nIntenta buscar con otro nombre o número.",
+                    icon = Icons.Default.Search,
+                    iconSize = 80.dp,
+                    imageSize = 40.dp,
+                    cardPadding = 32.dp,
+                    modifier = Modifier.padding(24.dp)
+                )
             }
         } else {
             // Cuadricula de Pokemon

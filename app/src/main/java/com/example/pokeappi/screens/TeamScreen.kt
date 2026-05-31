@@ -1,6 +1,5 @@
 package com.example.pokeappi.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -8,12 +7,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.ui.res.painterResource
+import com.example.pokeappi.R
 import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,9 +18,6 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pokeappi.Components.MessageCard
 import com.example.pokeappi.Components.PokemonCard
 import com.example.pokeappi.Components.PokemonDetails
 import com.example.pokeappi.Components.PokemonTopBar
@@ -92,57 +87,14 @@ fun TeamScreen(
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .background(
-                                        color = Color(0xFFFFEBEE),
-                                        shape = RoundedCornerShape(30.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = null,
-                                    tint = Color(0xFFE57373),
-                                    modifier = Modifier.size(30.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            Text(
-                                text = "Sin Coincidencias",
-                                fontFamily = PokemonHollowFamily,
-                                fontWeight = FontWeight.ExtraBold,
-                                fontSize = 18.sp,
-                                color = Color(0xFFE57373),
-                                textAlign = TextAlign.Center
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = "Ningún Pokémon en tu equipo coincide con \"$searchText\".",
-                                fontSize = 13.sp,
-                                color = Color.Gray,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
+                    MessageCard(
+                        title = "Sin Coincidencias",
+                        message = "Ningún Pokémon en tu equipo coincide con \"$searchText\".",
+                        icon = Icons.Default.Search,
+                        iconSize = 60.dp,
+                        imageSize = 30.dp,
+                        cardPadding = 24.dp
+                    )
                 }
             } else {
                 Box(
@@ -151,12 +103,13 @@ fun TeamScreen(
                         .padding(24.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Tu equipo está vacío. ¡Ve a la pantalla principal y selecciona hasta 6 Pokémon!",
-                        fontSize = 16.sp,
-                        color = Color.Gray,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Medium
+                    MessageCard(
+                        title = "¡Equipo Vacío!",
+                        message = "Tu equipo está vacío. ¡Ve a la pantalla principal y selecciona hasta 6 Pokémon!",
+                        imagePainter = painterResource(id = R.drawable.pokeball),
+                        iconSize = 100.dp,
+                        imageSize = 56.dp,
+                        cardPadding = 32.dp
                     )
                 }
             }
