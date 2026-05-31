@@ -30,6 +30,9 @@ class PokemonViewModel : ViewModel() {
     // Lista que se actualiza con el filtro de busqueda
     var filteredPokemon = mutableStateOf<List<SimplePokemon>>(emptyList())
 
+    // Texto de busqueda para mantenerlo entre las pantallas Main y Team
+    var searchText = mutableStateOf("")
+
     // Estados para los detalles del pokemon
     private val _selectedPokemonDetail = mutableStateOf<PokemonDetailResponse?>(null)
     val selectedPokemonDetail: State<PokemonDetailResponse?> = _selectedPokemonDetail
@@ -124,6 +127,7 @@ class PokemonViewModel : ViewModel() {
 
     // Funcion para el filtro de busqueda por nombre o numero
     fun onSearchTextChange(query: String) {
+        searchText.value = query
         filteredPokemon.value = if (query.isEmpty()) {
             allPokemon
         } else {
