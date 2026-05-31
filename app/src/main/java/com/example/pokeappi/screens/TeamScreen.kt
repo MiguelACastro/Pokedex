@@ -40,7 +40,7 @@ fun TeamScreen(
     // Nombres de los integrantes en Firebase (Set<String>)
     val teamByNames by viewModel.pokemonTeam.collectAsState()
 
-    // Lista completa de Pokémon de tu API (es un MutableState, no un Flow)
+    // Lista completa de Pokémon de tu API (es un MutableState)
     val allPokemons = viewModel.filteredPokemon.value
 
     // Filtra la lista global conservando solo los que están en el equipo

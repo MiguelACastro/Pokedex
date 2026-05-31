@@ -1,8 +1,10 @@
 package com.example.pokeappi.navegation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,10 +13,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pokeappi.Components.PokeBottomBar
 import com.example.pokeappi.screens.LoginView
 import com.example.pokeappi.screens.MainScreen
+import com.example.pokeappi.screens.ProfileScreen
 import com.example.pokeappi.screens.RegionScreen
 import com.example.pokeappi.screens.RegisterView
 import com.example.pokeappi.screens.TeamScreen
 import com.example.pokeappi.viewModel.PokemonViewModel
+import com.example.pokeappi.viewModel.ProfileViewModel
 
 @Composable
 fun NavGraph() {
@@ -110,6 +114,20 @@ fun NavGraph() {
 
             // Vista de Perfil
             composable("perfil") {
+                val profileViewModel: ProfileViewModel = viewModel()
+
+                ProfileScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    profileViewModel = profileViewModel,
+                    pokemonViewModel = viewModel,
+                    onNavigateToTeam = { navController.navigate("equipo") },
+                    onNavigateToRegions = { navController.navigate("regiones") },
+                    onLogoutSuccess = {
+                        navController.navigate("login") {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
